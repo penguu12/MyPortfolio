@@ -663,66 +663,97 @@
     @keyframes pxBlink { 0%, 90%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.15); } }
     @keyframes pxWave { 0%, 60%, 100% { transform: rotate(0); } 70% { transform: rotate(18deg); } 80% { transform: rotate(-4deg); } 90% { transform: rotate(14deg); } }
 
-    /* ─── SKILLS ORBIT ─── */
-    .orbit-wrap { position: relative; height: 280vh; margin: 0 -2rem 3rem; }
-    .orbit-sticky {
-      position: sticky; top: 0; height: 100vh;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding-top: 64px; overflow: hidden;
+    /* ─── HERO SKY + CLOUDS ─── */
+    :root {
+      --sky: linear-gradient(180deg, #060a1d 0%, #0f1640 34%, #241f5c 58%, #4a3373 76%, #7a4f7c 90%);
+      --cloud-far:  rgba(176,166,240,.20);
+      --cloud-mid:  rgba(156,146,222,.30);
+      --cloud-near: rgba(126,114,196,.42);
+      --stars: .9;
     }
-    .orbit-hint {
-      font-family: 'Fira Code', monospace; font-size: .74rem; color: var(--muted);
-      margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem;
+    :root[data-theme="light"] {
+      --sky: linear-gradient(180deg, #3d9bf0 0%, #6db8fa 32%, #a7d6fd 60%, #dcefff 82%, #f2f8ff 94%);
+      --cloud-far:  rgba(255,255,255,.55);
+      --cloud-mid:  rgba(255,255,255,.75);
+      --cloud-near: rgba(255,255,255,.95);
+      --stars: 0;
     }
-    .orbit-hint .bar { width: 90px; height: 3px; border-radius: 99px; background: var(--track); overflow: hidden; }
-    .orbit-hint .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
-    .orbit-stage {
-      --S: min(92vw, calc(100vh - 210px), 720px);
-      width: var(--S); height: var(--S); position: relative; flex-shrink: 0;
+    #hero { overflow: hidden; }
+    .hero-inner { position: relative; z-index: 2; }
+    .hero-sky { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: var(--sky); transition: background .4s ease; }
+    .hero-sky::after {
+      content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 30%; z-index: 5;
+      background: linear-gradient(to bottom, transparent, var(--bg));
     }
-    .orbit-ring {
-      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-      border-radius: 50%; border: 1px dashed var(--glass-border); pointer-events: none;
+    .sky-stars {
+      position: absolute; inset: 0 0 35% 0; opacity: var(--stars); transition: opacity .4s;
+      background-image:
+        radial-gradient(1px 1px at 12% 18%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 28% 42%, #cbd5ff 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 44% 12%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 63% 30%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 78% 8%, #e0e7ff 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 88% 36%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 6% 55%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 55% 58%, #c7d2fe 50%, transparent 51%);
+      background-size: 520px 360px;
     }
-    .orbit-chip {
-      position: absolute; left: 50%; top: 50%;
-      display: flex; align-items: center; gap: .4rem;
-      white-space: nowrap; font-family: 'Fira Code', monospace; font-size: .74rem; font-weight: 500;
-      padding: .35rem .75rem; border-radius: 999px;
-      background: var(--chip-bg); color: var(--text);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(6px);
+    .cloud-layer {
+      position: absolute; left: 0; height: var(--h);
+      width: calc(100% + var(--tile));
+      -webkit-mask: var(--img) repeat-x 0 0 / var(--tile) 100%;
+              mask: var(--img) repeat-x 0 0 / var(--tile) 100%;
+      background: var(--c);
+      animation: cloudDrift var(--dur) linear infinite;
       will-change: transform;
-      transition: border-color .3s, box-shadow .3s;
     }
-    .orbit-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
-    .orbit-chip.active { border-color: var(--c); box-shadow: 0 0 0 1px var(--c), 0 0 24px -4px var(--c); }
-    .orbit-core {
-      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-      width: calc(var(--S) * .27); aspect-ratio: 1; border-radius: 50%;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-      background: radial-gradient(circle, rgba(124,58,237,.22), transparent 70%);
-    }
-    .orbit-core .px-penguin { width: 44%; height: auto; animation: penguinBob 2.4s ease-in-out infinite; filter: drop-shadow(0 0 1px rgba(255,255,255,.55)) drop-shadow(0 0 10px rgba(124,58,237,.5)); }
-    .core-skill {
-      font-family: 'Fira Code', monospace; font-weight: 600; font-size: .82rem;
-      color: var(--accent2); margin-top: .35rem; min-height: 1.3em; white-space: nowrap;
-    }
-    .core-cat { font-size: .58rem; color: var(--muted); text-transform: uppercase; letter-spacing: .14em; }
-    .orbit-legend {
-      display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem 1.3rem;
-      margin-top: 1.2rem; font-size: .75rem; color: var(--muted);
-    }
-    .orbit-legend span { display: inline-flex; align-items: center; gap: .4rem; }
-    .orbit-legend i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+    .cloud-far  { --tile: 1000px; --h: 220px; --dur: 80s; --c: var(--cloud-far);  top: 8%;
+                  --img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 220'%3E%3Cfilter id='b'%3E%3CfeGaussianBlur stdDeviation='5'/%3E%3C/filter%3E%3Cg fill='white' filter='url%28%23b%29'%3E%3Ccircle cx='117' cy='134' r='23'/%3E%3Ccircle cx='147' cy='117' r='33'/%3E%3Ccircle cx='186' cy='109' r='38'/%3E%3Ccircle cx='224' cy='120' r='30'/%3E%3Ccircle cx='250' cy='132' r='20'/%3E%3Crect x='114' y='126' width='138' height='28' rx='14'/%3E%3Ccircle cx='474' cy='100' r='17'/%3E%3Ccircle cx='496' cy='88' r='24'/%3E%3Ccircle cx='524' cy='82' r='28'/%3E%3Ccircle cx='552' cy='90' r='22'/%3E%3Ccircle cx='571' cy='99' r='14'/%3E%3Crect x='472' y='94' width='100' height='20' rx='10'/%3E%3Ccircle cx='762' cy='148' r='21'/%3E%3Ccircle cx='790' cy='132' r='30'/%3E%3Ccircle cx='825' cy='125' r='35'/%3E%3Ccircle cx='860' cy='135' r='27'/%3E%3Ccircle cx='884' cy='146' r='18'/%3E%3Crect x='760' y='140' width='125' height='25' rx='12'/%3E%3C/g%3E%3C/svg%3E"); }
+    .cloud-mid  { --tile: 1300px; --h: 260px; --dur: 46s; --c: var(--cloud-mid);  top: 30%;
+                  --img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1300 260'%3E%3Cfilter id='b'%3E%3CfeGaussianBlur stdDeviation='4'/%3E%3C/filter%3E%3Cg fill='white' filter='url%28%23b%29'%3E%3Ccircle cx='128' cy='160' r='34'/%3E%3Ccircle cx='172' cy='136' r='48'/%3E%3Ccircle cx='228' cy='124' r='56'/%3E%3Ccircle cx='284' cy='140' r='43'/%3E%3Ccircle cx='322' cy='158' r='29'/%3E%3Crect x='124' y='148' width='200' height='40' rx='20'/%3E%3Ccircle cx='685' cy='136' r='27'/%3E%3Ccircle cx='721' cy='117' r='39'/%3E%3Ccircle cx='766' cy='107' r='46'/%3E%3Ccircle cx='812' cy='120' r='35'/%3E%3Ccircle cx='843' cy='134' r='23'/%3E%3Crect x='682' y='126' width='162' height='32' rx='16'/%3E%3Ccircle cx='1062' cy='172' r='21'/%3E%3Ccircle cx='1090' cy='158' r='30'/%3E%3Ccircle cx='1125' cy='150' r='35'/%3E%3Ccircle cx='1160' cy='160' r='27'/%3E%3Ccircle cx='1184' cy='171' r='18'/%3E%3Crect x='1060' y='165' width='125' height='25' rx='12'/%3E%3C/g%3E%3C/svg%3E"); animation-delay: -12s; }
+    .cloud-near { --tile: 1800px; --h: 300px; --dur: 26s; --c: var(--cloud-near); bottom: 6%;
+                  --img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1800 300'%3E%3Cfilter id='b'%3E%3CfeGaussianBlur stdDeviation='3'/%3E%3C/filter%3E%3Cg fill='white' filter='url%28%23b%29'%3E%3Ccircle cx='185' cy='195' r='42'/%3E%3Ccircle cx='240' cy='165' r='60'/%3E%3Ccircle cx='310' cy='150' r='70'/%3E%3Ccircle cx='380' cy='170' r='54'/%3E%3Ccircle cx='428' cy='192' r='36'/%3E%3Crect x='180' y='180' width='250' height='50' rx='25'/%3E%3Ccircle cx='918' cy='179' r='48'/%3E%3Ccircle cx='981' cy='144' r='69'/%3E%3Ccircle cx='1062' cy='127' r='80'/%3E%3Ccircle cx='1142' cy='150' r='62'/%3E%3Ccircle cx='1197' cy='175' r='41'/%3E%3Crect x='912' y='162' width='288' height='57' rx='29'/%3E%3Ccircle cx='1468' cy='210' r='34'/%3E%3Ccircle cx='1512' cy='186' r='48'/%3E%3Ccircle cx='1568' cy='174' r='56'/%3E%3Ccircle cx='1624' cy='190' r='43'/%3E%3Ccircle cx='1662' cy='208' r='29'/%3E%3Crect x='1464' y='198' width='200' height='40' rx='20'/%3E%3C/g%3E%3C/svg%3E"); animation-delay: -7s; }
+    @keyframes cloudDrift { from { transform: translateX(0); } to { transform: translateX(calc(-1 * var(--tile))); } }
     @media (max-width: 600px) {
-      .orbit-wrap { height: 240vh; }
-      .orbit-stage { --S: min(86vw, calc(100vh - 210px)); }
-      .orbit-chip { font-size: .56rem; padding: .2rem .45rem; gap: .26rem; }
-      .orbit-chip i { width: 5px; height: 5px; }
-      .core-skill { font-size: .66rem; }
-      .core-cat { font-size: .5rem; }
+      .cloud-far  { --tile: 700px;  --h: 154px; }
+      .cloud-mid  { --tile: 900px;  --h: 180px; }
+      .cloud-near { --tile: 1200px; --h: 200px; }
     }
+    :root[data-theme="light"] #hero { --muted: #1f3b5c; }
+    :root[data-theme="light"] #hero .hero-title { color: #075985; }
+    :root[data-theme="light"] #hero .hero-title .cursor { background: #075985; }
+    :root[data-theme="light"] #hero .gradient-text { filter: drop-shadow(0 2px 14px rgba(255,255,255,.75)); }
+
+    /* ─── DECODE HEADLINE ─── */
+    .decode .dg { color: var(--accent2); font-family: 'Fira Code', monospace; font-weight: 500; }
+
+    /* ─── EXPERTISE CAMERA RAIL ─── */
+    .rail-wrap { position: relative; height: 520vh; width: 100vw; margin: 0 0 4rem calc(50% - 50vw); }
+    .rail-wrap.no-webgl { display: none; }
+    .rail-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+    #rail-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    .rail-sticky::before, .rail-sticky::after {
+      content: ''; position: absolute; left: 0; right: 0; height: 90px; z-index: 2; pointer-events: none;
+    }
+    .rail-sticky::before { top: 0; background: linear-gradient(var(--bg), transparent); }
+    .rail-sticky::after  { bottom: 0; background: linear-gradient(transparent, var(--bg)); }
+    .rail-hint {
+      position: absolute; top: 88px; left: 50%; transform: translateX(-50%); z-index: 3;
+      font-family: 'Fira Code', monospace; font-size: .74rem; color: var(--muted);
+      display: flex; align-items: center; gap: .5rem; white-space: nowrap;
+    }
+    .rail-hint .bar { width: 90px; height: 3px; border-radius: 99px; background: var(--track); overflow: hidden; }
+    .rail-hint .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+    .rail-label {
+      position: absolute; bottom: 2.2rem; left: 50%; transform: translateX(-50%); z-index: 3;
+      display: flex; align-items: center; gap: .6rem; white-space: nowrap;
+      font-family: 'Fira Code', monospace; font-size: .8rem;
+      padding: .5rem 1rem; border-radius: 999px;
+      background: var(--chip-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(8px);
+    }
+    .rail-label .n { color: var(--muted); }
+    .rail-label i { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--accent2)); }
+    @media (max-width: 600px) { .rail-wrap { height: 440vh; } }
 
     .split-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
     @media (max-width: 700px) { .split-2 { grid-template-columns: 1fr; gap: 1rem; } }
@@ -776,8 +807,8 @@
     :root[data-theme="light"] body::after { opacity: .2; }
 
     @media (prefers-reduced-motion: reduce) {
-      .orbit-wrap { height: auto; }
-      .orbit-sticky { position: relative; height: auto; padding: 1rem 0 2rem; }
+      .rail-wrap { display: none; }
+      .cloud-layer { animation: none !important; }
       .px-penguin, .px-penguin * { animation: none !important; }
     }
 
@@ -835,6 +866,12 @@
 
   <!-- HERO -->
   <section id="hero">
+    <div class="hero-sky" aria-hidden="true">
+      <div class="sky-stars"></div>
+      <div class="cloud-layer cloud-far"></div>
+      <div class="cloud-layer cloud-mid"></div>
+      <div class="cloud-layer cloud-near"></div>
+    </div>
     <div class="hero-inner">
       <div class="hero-avatar" role="img" aria-label="Pixel-art penguin avatar">
         <svg class="px-penguin" data-penguin viewBox="0 0 16 16" aria-hidden="true"></svg>
@@ -872,7 +909,7 @@
     <div class="container">
       <div class="section-header reveal">
         <div class="section-tag">// about me</div>
-        <h2 class="section-title">I Live & Breathe Code</h2>
+        <h2 class="section-title decode" data-decode>I Live &amp; Breathe Code</h2>
       </div>
       <div class="about-grid">
         <div class="about-text reveal">
@@ -917,22 +954,11 @@
         <h2 class="section-title">Tech Stack</h2>
       </div>
 
-      <div class="orbit-wrap" id="orbit-wrap">
-        <div class="orbit-sticky">
-          <div class="orbit-hint">scroll to spin <span class="bar"><i id="orbit-progress"></i></span></div>
-          <div class="orbit-stage" id="orbit-stage">
-            <div class="orbit-core">
-              <svg class="px-penguin" data-penguin viewBox="0 0 16 16" aria-hidden="true"></svg>
-              <div class="core-skill" id="core-skill">HTML5</div>
-              <div class="core-cat" id="core-cat">Web</div>
-            </div>
-          </div>
-          <div class="orbit-legend">
-            <span style="--c:#06b6d4"><i></i>Web</span>
-            <span style="--c:#f59e0b"><i></i>Tools</span>
-            <span style="--c:#ec4899"><i></i>Vibe Coding</span>
-            <span style="--c:#a78bfa"><i></i>AI</span>
-          </div>
+      <div class="rail-wrap" id="rail-wrap">
+        <div class="rail-sticky">
+          <canvas id="rail-canvas" aria-label="3D tour of my skills: eight skill cards along a curved path"></canvas>
+          <div class="rail-hint">scroll to travel <span class="bar"><i id="rail-progress"></i></span></div>
+          <div class="rail-label" id="rail-label" aria-live="polite"><i></i><span class="n">01 / 08</span><span class="t">HTML5</span></div>
         </div>
       </div>
 
@@ -1711,92 +1737,49 @@
     });
   })();
 
-  // ─── SKILLS ORBIT (scroll-driven) ──────────────────────────────
+  // ─── DECODE HEADLINE ───────────────────────────────────────────
   (function() {
-    const wrap  = document.getElementById('orbit-wrap');
-    const stage = document.getElementById('orbit-stage');
-    if (!wrap || !stage) return;
-    const CAT = {
-      web:   { c:'#06b6d4', label:'Web' },
-      tools: { c:'#f59e0b', label:'Tools' },
-      vibe:  { c:'#ec4899', label:'Vibe Coding' },
-      ai:    { c:'#a78bfa', label:'AI' }
-    };
-    const RINGS = [
-      { r:.43, speed: 1, items:[['HTML5','web'],['CSS3','web'],['JavaScript','web'],['Git','tools'],['Flexbox','web'],['GitHub','tools'],['CSS Grid','web'],['VS Code','tools'],['PHP','web'],['Responsive','web'],['Animations','web']] },
-      { r:.31, speed:-1, items:[['Vibe Coding','vibe'],['Claude Code','vibe'],['Prototyping','vibe'],['AI Pair Prog','vibe'],['Prompting','vibe'],['Context Eng','vibe'],['AI Testing','vibe']] },
-      { r:.195, speed:1.5, items:[['Claude AI','ai'],['Gemini','ai'],['ChatGPT','ai'],['Copilot','ai'],['Prompt Eng','ai']] }
-    ];
-    RINGS.forEach(ring => {
-      const circle = document.createElement('div');
-      circle.className = 'orbit-ring';
-      circle.style.width = circle.style.height = `calc(var(--S) * ${ring.r * 2})`;
-      stage.insertBefore(circle, stage.firstChild);
-      ring.chips = ring.items.map(([name, cat]) => {
-        const el = document.createElement('div');
-        el.className = 'orbit-chip';
-        el.style.setProperty('--c', CAT[cat].c);
-        el.innerHTML = '<i></i>';
-        el.appendChild(document.createTextNode(name));
-        stage.appendChild(el);
-        return el;
-      });
-    });
-
-    const coreSkill = document.getElementById('core-skill');
-    const coreCat   = document.getElementById('core-cat');
-    const bar       = document.getElementById('orbit-progress');
-    const reduce    = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const TAU = Math.PI * 2;
-    let target = 0, cur = 0, dirty = true, lastCore = -1;
-
-    function readScroll() {
+    const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*<>/\\{}[]=+?;:';
+    const rnd = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('[data-decode]').forEach(el => {
+      const text = el.textContent;
       if (reduce) return;
-      const rect = wrap.getBoundingClientRect();
-      const total = wrap.offsetHeight - window.innerHeight;
-      target = total > 0 ? Math.min(Math.max(-rect.top / total, 0), 1) : 0;
-    }
-
-    function layout() {
-      const S = stage.clientWidth;
-      const small = S < 480;
-      const depthScale = small ? .3 : .12, depthFade = small ? .55 : .3;
-      RINGS.forEach((ring, ri) => {
-        const n = ring.chips.length, step = TAU / n;
-        const offset = ring.speed * cur * TAU;
-        const active = ((Math.round(-offset / step) % n) + n) % n;
-        ring.chips.forEach((el, i) => {
-          const a = -Math.PI / 2 + i * step + offset;
-          const x = Math.cos(a) * ring.r * S, y = Math.sin(a) * ring.r * S;
-          const on = i === active;
-          const front = (1 - Math.sin(a)) / 2;               // 1 at top, 0 at bottom
-          const s = on ? 1.14 : 1 - depthScale * (1 - front);
-          el.classList.toggle('active', on);
-          el.style.transform = `translate(-50%, -50%) translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${s.toFixed(3)})`;
-          el.style.opacity = on ? 1 : (1 - depthFade * (1 - front)).toFixed(2);
-          el.style.zIndex = on ? 50 : Math.round(front * 40);
-        });
-        if (ri === 0 && active !== lastCore) {
-          lastCore = active;
-          const [name, cat] = ring.items[active];
-          coreSkill.textContent = name;
-          coreCat.textContent = CAT[cat].label;
-        }
+      el.setAttribute('aria-label', text);
+      el.textContent = '';
+      const cells = [...text].map(ch => {
+        const sp = document.createElement('span');
+        sp.setAttribute('aria-hidden', 'true');
+        if (ch === ' ') { sp.textContent = ' '; } else { sp.textContent = rnd(); sp.className = 'dg'; }
+        el.appendChild(sp);
+        return { ch, sp };
       });
-      bar.style.width = (cur * 100).toFixed(1) + '%';
-    }
-
-    function tick() {
-      const diff = target - cur;
-      if (Math.abs(diff) > 0.0002) { cur += diff * 0.12; dirty = true; }
-      else if (cur !== target) { cur = target; dirty = true; }
-      if (dirty) { layout(); dirty = false; }
-      requestAnimationFrame(tick);
-    }
-    window.addEventListener('scroll', readScroll, { passive: true });
-    window.addEventListener('resize', () => { readScroll(); dirty = true; });
-    readScroll(); cur = target;
-    tick();
+      let started = false;
+      function run() {
+        if (started) return; started = true;
+        let settled = 0, frame = 0;
+        (function tick() {
+          frame++;
+          if (frame % 3 === 0) {
+            const c = cells[settled];
+            c.sp.textContent = c.ch; c.sp.className = '';
+            settled++;
+            while (settled < cells.length && cells[settled].ch === ' ') settled++;
+          }
+          for (let k = settled; k < cells.length; k++) if (cells[k].ch !== ' ') cells[k].sp.textContent = rnd();
+          if (settled < cells.length) requestAnimationFrame(tick);
+        })();
+      }
+      const loader = document.getElementById('loader');
+      const io = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        (function wait() {
+          if (!loader || loader.classList.contains('hide')) run(); else setTimeout(wait, 120);
+        })();
+      }, { threshold: 0.6 });
+      io.observe(el);
+    });
   })();
 
   // ─── CLICKABLE PROJECT CARDS + DETAILS MODAL ───────────────────
@@ -1872,6 +1855,228 @@
       });
     });
   })();
+  </script>
+  <!-- EXPERTISE: THREE.JS CAMERA RAIL -->
+  <script type="module">
+  const wrap = document.getElementById('rail-wrap');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (wrap && !reduceMotion) {
+    import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js')
+      .then(THREE => initRail(THREE))
+      .catch(() => wrap.classList.add('no-webgl'));
+  }
+
+  function initRail(THREE) {
+    const canvas = document.getElementById('rail-canvas');
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    } catch (e) { wrap.classList.add('no-webgl'); return; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 200);
+    scene.fog = new THREE.Fog(0x050810, 9, 44);
+    const UP = new THREE.Vector3(0, 1, 0);
+
+    // ── the rail: a gentle S-curve heading into the distance
+    const curve = new THREE.CatmullRomCurve3([
+      [0, 0, 10], [2.2, 0, 2], [-2.2, 0, -6], [2.6, 0, -14], [-2.2, 0, -22],
+      [2.4, 0, -30], [-2.6, 0, -38], [2.0, 0, -46], [-1.2, 0, -54], [0, 0, -62]
+    ].map(p => new THREE.Vector3(...p)), false, 'catmullrom', 0.5);
+
+    // ── eight skill cards
+    const CARDS = [
+      { name: 'HTML5',              cat: 'Web',         c: '#06b6d4', bars: [['Semantic Markup', 85], ['Responsive Layout', 80], ['Forms & Embeds', 78]] },
+      { name: 'CSS3',               cat: 'Web',         c: '#06b6d4', bars: [['Flexbox / Grid', 80], ['Animations & Transitions', 75], ['Mobile-First Design', 78]] },
+      { name: 'JavaScript',         cat: 'Web',         c: '#06b6d4', bars: [['DOM Manipulation', 72], ['Event Handling', 70], ['ES6+ Basics', 65]] },
+      { name: 'Tools & Deploy',     cat: 'Tools',       c: '#f59e0b', tags: ['Git', 'GitHub Pages', 'VS Code', 'Google Maps Embed', 'YouTube Embed', 'Facebook Integration'] },
+      { name: 'Claude AI',          cat: 'AI',          c: '#a78bfa', bars: [['Anthropic Claude AI', 82]], tags: ['AI Code Review', 'AI Debugging', 'Prompt Design'] },
+      { name: 'Gemini AI',          cat: 'AI',          c: '#a78bfa', bars: [['Google Gemini AI', 80]], tags: ['ChatGPT', 'Copilot'] },
+      { name: 'Prompt Engineering', cat: 'AI',          c: '#a78bfa', bars: [['Prompt Engineering', 75]], tags: ['Context Engineering', 'Iterative Prompting'] },
+      { name: 'Vibe Coding',        cat: 'Vibe Coding', c: '#ec4899', bars: [['Idea → Working Prototype', 85], ['Steering AI Agents', 80], ['Iterating & Debugging with AI', 78]] }
+    ];
+    const T0 = 0.1, T1 = 0.88;
+    const CW = 1024, CH = 640;
+    const cardGeo = new THREE.PlaneGeometry(2.3, 2.3 * CH / CW);
+    const maxAniso = renderer.capabilities.getMaxAnisotropy();
+
+    function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+    function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
+
+    function drawCard(cv, d, i, light) {
+      const ctx = cv.getContext('2d');
+      ctx.clearRect(0, 0, CW, CH);
+      const bg = light ? '#ffffff' : '#0c1224', text = light ? '#0f172a' : '#e2e8f0';
+      const muted = light ? '#52607a' : '#7c8aa5', line = light ? 'rgba(15,23,42,.12)' : 'rgba(255,255,255,.10)';
+      const track = light ? 'rgba(15,23,42,.08)' : 'rgba(255,255,255,.08)';
+      // window
+      rr(ctx, 6, 6, CW - 12, CH - 12, 40); ctx.fillStyle = bg; ctx.fill();
+      ctx.lineWidth = 4; ctx.strokeStyle = d.c + '88'; ctx.stroke();
+      // title bar
+      ctx.save(); rr(ctx, 6, 6, CW - 12, 76, [40, 40, 0, 0]); ctx.clip();
+      ctx.fillStyle = light ? 'rgba(15,23,42,.035)' : 'rgba(255,255,255,.04)'; ctx.fillRect(0, 0, CW, 82); ctx.restore();
+      ctx.fillStyle = line; ctx.fillRect(6, 82, CW - 12, 2);
+      ['#ef4444', '#f59e0b', '#22c55e'].forEach((col, k) => { ctx.beginPath(); ctx.arc(52 + k * 34, 44, 10, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill(); });
+      rr(ctx, 170, 26, 360, 36, 10); ctx.fillStyle = track; ctx.fill();
+      ctx.font = '500 22px "Fira Code", monospace'; ctx.fillStyle = muted; ctx.textBaseline = 'middle';
+      ctx.fillText('skills/' + d.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'), 188, 45);
+      // index + category
+      ctx.textBaseline = 'alphabetic';
+      ctx.font = '600 30px "Fira Code", monospace'; ctx.fillStyle = d.c;
+      ctx.fillText(String(i + 1).padStart(2, '0') + ' / 08', 60, 150);
+      ctx.font = '700 22px Inter, sans-serif'; ctx.fillStyle = muted;
+      const cat = d.cat.toUpperCase(); const cw = ctx.measureText(cat).width;
+      rr(ctx, CW - 60 - cw - 32, 120, cw + 32, 40, 20); ctx.fillStyle = d.c + '22'; ctx.fill();
+      ctx.fillStyle = d.c; ctx.fillText(cat, CW - 60 - cw - 16, 148);
+      // title
+      ctx.font = '800 64px Inter, sans-serif'; ctx.fillStyle = text;
+      ctx.fillText(d.name, 60, 232);
+      // bars
+      let y = 290;
+      (d.bars || []).forEach(([label, pct]) => {
+        ctx.font = '500 26px Inter, sans-serif'; ctx.fillStyle = text; ctx.fillText(label, 60, y);
+        ctx.font = '500 22px "Fira Code", monospace'; ctx.fillStyle = muted;
+        const t = pct + '%'; ctx.fillText(t, CW - 60 - ctx.measureText(t).width, y);
+        rr(ctx, 60, y + 16, CW - 120, 12, 6); ctx.fillStyle = track; ctx.fill();
+        const g = ctx.createLinearGradient(60, 0, 60 + (CW - 120) * pct / 100, 0);
+        g.addColorStop(0, '#7c3aed'); g.addColorStop(1, d.c);
+        rr(ctx, 60, y + 16, (CW - 120) * pct / 100, 12, 6); ctx.fillStyle = g; ctx.fill();
+        y += 84;
+      });
+      // tags
+      if (d.tags) {
+        let x = 60; y += d.bars ? 0 : 10;
+        ctx.font = '500 24px "Fira Code", monospace';
+        d.tags.forEach(tag => {
+          const w = ctx.measureText(tag).width + 40;
+          if (x + w > CW - 60) { x = 60; y += 64; }
+          rr(ctx, x, y - 34, w, 48, 12); ctx.fillStyle = track; ctx.fill();
+          ctx.lineWidth = 2; ctx.strokeStyle = line; ctx.stroke();
+          ctx.fillStyle = text; ctx.fillText(tag, x + 20, y - 1);
+          x += w + 14;
+        });
+      }
+    }
+
+    const cards = CARDS.map((d, i) => {
+      const cv = document.createElement('canvas'); cv.width = CW; cv.height = CH;
+      const tex = new THREE.CanvasTexture(cv);
+      tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = maxAniso;
+      const mesh = new THREE.Mesh(cardGeo, new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide }));
+      mesh.userData = { d, i, cv, tex, t: T0 + i * (T1 - T0) / (CARDS.length - 1), side: i % 2 === 0 ? -1 : 1 };
+      scene.add(mesh);
+      return mesh;
+    });
+
+    function placeCards(portrait) {
+      const off = portrait ? 0.95 : 2.6, scale = portrait ? 0.62 : 1;
+      cards.forEach(m => {
+        const { t, side } = m.userData;
+        const p = curve.getPointAt(t), tan = curve.getTangentAt(t);
+        const right = new THREE.Vector3().crossVectors(tan, UP).normalize();
+        m.position.copy(p).addScaledVector(right, side * off).addScaledVector(UP, 1.45);
+        m.userData.baseY = m.position.y;
+        m.scale.setScalar(scale);
+        const from = curve.getPointAt(Math.max(t - 0.07, 0)).addScaledVector(UP, 1.4);
+        m.lookAt(from);
+      });
+    }
+
+    // ── dotted route line below the camera path
+    const dotCv = document.createElement('canvas'); dotCv.width = dotCv.height = 64;
+    const dctx = dotCv.getContext('2d');
+    dctx.beginPath(); dctx.arc(32, 32, 26, 0, Math.PI * 2); dctx.fillStyle = '#fff'; dctx.fill();
+    const routePts = curve.getSpacedPoints(560).map(v => new THREE.Vector3(v.x, 0.02, v.z));
+    const dots = new THREE.Points(
+      new THREE.BufferGeometry().setFromPoints(routePts),
+      new THREE.PointsMaterial({ size: 0.09, map: new THREE.CanvasTexture(dotCv), transparent: true, alphaTest: 0.4, depthWrite: false, sizeAttenuation: true })
+    );
+    scene.add(dots);
+
+    // ── theme-aware colors
+    function applyTheme() {
+      const light = document.documentElement.getAttribute('data-theme') === 'light';
+      scene.fog.color.set(css('--bg') || '#050810');
+      dots.material.color.set(css('--accent2') || '#06b6d4');
+      cards.forEach(m => { drawCard(m.userData.cv, m.userData.d, m.userData.i, light); m.userData.tex.needsUpdate = true; });
+      dirty = true;
+    }
+    new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    // ── sizing
+    let portrait = null, dirty = true;
+    function resize() {
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      const p = w / h < 0.9;
+      camera.fov = p ? 72 : 58;
+      camera.updateProjectionMatrix();
+      if (p !== portrait) { portrait = p; placeCards(p); }
+      dirty = true;
+    }
+    window.addEventListener('resize', resize);
+
+    // ── scroll → camera position along the rail
+    const bar = document.getElementById('rail-progress');
+    const label = document.getElementById('rail-label');
+    const labelN = label.querySelector('.n'), labelT = label.querySelector('.t');
+    let target = 0, cur = 0, lastIdx = -1, visible = false;
+    function readScroll() {
+      const rect = wrap.getBoundingClientRect();
+      const total = wrap.offsetHeight - window.innerHeight;
+      target = total > 0 ? Math.min(Math.max(-rect.top / total, 0), 1) : 0;
+    }
+    window.addEventListener('scroll', readScroll, { passive: true });
+
+    const camPos = new THREE.Vector3(), look = new THREE.Vector3(), lookSmooth = new THREE.Vector3();
+    let firstFrame = true;
+    function update(time) {
+      const t = cur * 0.965;
+      camPos.copy(curve.getPointAt(t)).addScaledVector(UP, 1.4);
+      look.copy(curve.getPointAt(Math.min(t + 0.05, 1))).addScaledVector(UP, 1.2);
+      // turn the head toward the next card while approaching it
+      const next = cards.find(m => m.userData.t > t + 0.005);
+      if (next) {
+        const k = Math.min(Math.max(1 - (next.userData.t - t) / 0.11, 0), 1);
+        look.lerp(next.position, Math.sin(Math.PI * k) * (portrait ? 0.6 : 0.28));
+      }
+      lookSmooth.lerp(look, firstFrame ? 1 : 0.15); firstFrame = false;
+      camera.position.copy(camPos);
+      camera.lookAt(lookSmooth);
+      cards.forEach(m => { m.position.y = m.userData.baseY + Math.sin(time * 0.0012 + m.userData.i) * 0.035; });
+      bar.style.width = (cur * 100).toFixed(1) + '%';
+      const idx = next ? next.userData.i : CARDS.length - 1;
+      if (idx !== lastIdx) {
+        lastIdx = idx;
+        const d = CARDS[idx];
+        labelN.textContent = String(idx + 1).padStart(2, '0') + ' / 08';
+        labelT.textContent = d.name;
+        label.style.setProperty('--c', d.c);
+      }
+    }
+
+    function frame(time) {
+      if (!visible) return;
+      const diff = target - cur;
+      cur = Math.abs(diff) > 0.0002 ? cur + diff * 0.1 : target;
+      update(time);
+      renderer.render(scene, camera);
+      requestAnimationFrame(frame);
+    }
+    new IntersectionObserver(entries => {
+      const was = visible;
+      visible = entries[0].isIntersecting;
+      if (visible && !was) { resize(); readScroll(); requestAnimationFrame(frame); }
+    }, { rootMargin: '200px 0px' }).observe(wrap);
+
+    resize(); readScroll(); cur = target;
+    applyTheme();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(applyTheme);
+  }
   </script>
 </body>
 </html>
