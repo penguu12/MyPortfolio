@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mark Kevin Pante | Full Stack Developer</title>
+  <script>try { if (localStorage.getItem('theme') === 'light') document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}</script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,6 +21,30 @@
       --glass-border: rgba(255,255,255,0.08);
       --glow: 0 0 40px rgba(124,58,237,0.3);
       --glow2: 0 0 40px rgba(6,182,212,0.3);
+      --nav-bg: rgba(5,8,16,0.7);
+      --nav-bg-scrolled: rgba(5,8,16,0.95);
+      --track: rgba(255,255,255,.07);
+      --chip-bg: rgba(10,15,30,.82);
+      --modal-backdrop: rgba(5,8,16,.7);
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f5f6fb;
+      --bg2: #ffffff;
+      --accent: #7c3aed;
+      --accent2: #0891b2;
+      --accent3: #d97706;
+      --text: #0f172a;
+      --muted: #52607a;
+      --glass: rgba(255,255,255,0.75);
+      --glass-border: rgba(15,23,42,0.10);
+      --glow: 0 0 40px rgba(124,58,237,0.14);
+      --glow2: 0 0 40px rgba(8,145,178,0.14);
+      --nav-bg: rgba(245,246,251,0.75);
+      --nav-bg-scrolled: rgba(245,246,251,0.95);
+      --track: rgba(15,23,42,.08);
+      --chip-bg: rgba(255,255,255,.92);
+      --modal-backdrop: rgba(15,23,42,.35);
     }
 
     html { scroll-behavior: smooth; }
@@ -30,6 +55,7 @@
       color: var(--text);
       overflow-x: hidden;
       line-height: 1.6;
+      transition: background .35s ease, color .35s ease;
     }
 
     /* ─── CANVAS ─── */
@@ -45,11 +71,25 @@
       z-index: 100;
       padding: 1rem 2rem;
       display: flex; align-items: center; justify-content: space-between;
-      background: rgba(5,8,16,0.7);
+      background: var(--nav-bg);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--glass-border);
       transition: all .3s;
     }
+    nav.scrolled { background: var(--nav-bg-scrolled); }
+    .nav-right { display: flex; align-items: center; gap: 1.6rem; }
+    .theme-toggle {
+      width: 40px; height: 40px; border-radius: 10px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass); color: var(--text);
+      display: grid; place-items: center;
+      transition: border-color .2s, color .2s, transform .2s;
+    }
+    .theme-toggle:hover { border-color: var(--accent); color: var(--accent); transform: rotate(-12deg); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-toggle .icon-moon { display: none; }
+    :root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+    :root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
     .nav-logo {
       font-family: 'Fira Code', monospace;
       font-size: 1.1rem;
@@ -293,7 +333,7 @@
     .skill-bar-label span { color: var(--muted); font-family: 'Fira Code', monospace; font-size: .75rem; }
     .skill-bar {
       height: 4px; border-radius: 99px;
-      background: rgba(255,255,255,.07); overflow: hidden;
+      background: var(--track); overflow: hidden;
     }
     .skill-bar-fill {
       height: 100%; border-radius: 99px;
@@ -589,6 +629,158 @@
       text-align: right; margin-top: .5rem;
     }
 
+    /* ─── PIXEL PENGUIN AVATAR ─── */
+    .hero-avatar {
+      width: 132px; height: 132px; margin: 0 auto 1.6rem;
+      position: relative; isolation: isolate;
+      border-radius: 30px; background: var(--bg2);
+      display: grid; place-items: center;
+      box-shadow: var(--glow);
+      animation: fadeUp .6s ease both;
+    }
+    .hero-avatar::before {
+      content: ''; position: absolute; inset: -3px; z-index: -1;
+      border-radius: 33px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3), var(--accent));
+      background-size: 300% 300%;
+      animation: gradientShift 5s ease infinite;
+    }
+    .hero-avatar::after {
+      content: ''; position: absolute; inset: 0; z-index: -1;
+      border-radius: 30px; background: var(--bg2);
+    }
+    .hero-avatar .px-penguin { width: 80%; height: 80%; animation: penguinBob 2.4s ease-in-out infinite; }
+    .hero-avatar .status-dot {
+      position: absolute; right: 6px; bottom: 6px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #22c55e; border: 3px solid var(--bg2);
+      box-shadow: 0 0 10px rgba(34,197,94,.7);
+    }
+    .px-penguin { shape-rendering: crispEdges; overflow: visible; }
+    .px-penguin .px-eye { transform-box: fill-box; transform-origin: center; animation: pxBlink 4.2s infinite; }
+    .px-penguin .px-wing-l { transform-box: fill-box; transform-origin: top right; animation: pxWave 2.4s ease-in-out infinite; }
+    @keyframes penguinBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    @keyframes pxBlink { 0%, 90%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.15); } }
+    @keyframes pxWave { 0%, 60%, 100% { transform: rotate(0); } 70% { transform: rotate(18deg); } 80% { transform: rotate(-4deg); } 90% { transform: rotate(14deg); } }
+
+    /* ─── SKILLS ORBIT ─── */
+    .orbit-wrap { position: relative; height: 280vh; margin: 0 -2rem 3rem; }
+    .orbit-sticky {
+      position: sticky; top: 0; height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding-top: 64px; overflow: hidden;
+    }
+    .orbit-hint {
+      font-family: 'Fira Code', monospace; font-size: .74rem; color: var(--muted);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem;
+    }
+    .orbit-hint .bar { width: 90px; height: 3px; border-radius: 99px; background: var(--track); overflow: hidden; }
+    .orbit-hint .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+    .orbit-stage {
+      --S: min(92vw, calc(100vh - 210px), 720px);
+      width: var(--S); height: var(--S); position: relative; flex-shrink: 0;
+    }
+    .orbit-ring {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      border-radius: 50%; border: 1px dashed var(--glass-border); pointer-events: none;
+    }
+    .orbit-chip {
+      position: absolute; left: 50%; top: 50%;
+      display: flex; align-items: center; gap: .4rem;
+      white-space: nowrap; font-family: 'Fira Code', monospace; font-size: .74rem; font-weight: 500;
+      padding: .35rem .75rem; border-radius: 999px;
+      background: var(--chip-bg); color: var(--text);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(6px);
+      will-change: transform;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .orbit-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
+    .orbit-chip.active { border-color: var(--c); box-shadow: 0 0 0 1px var(--c), 0 0 24px -4px var(--c); }
+    .orbit-core {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      width: calc(var(--S) * .27); aspect-ratio: 1; border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+      background: radial-gradient(circle, rgba(124,58,237,.22), transparent 70%);
+    }
+    .orbit-core .px-penguin { width: 44%; height: auto; animation: penguinBob 2.4s ease-in-out infinite; filter: drop-shadow(0 0 1px rgba(255,255,255,.55)) drop-shadow(0 0 10px rgba(124,58,237,.5)); }
+    .core-skill {
+      font-family: 'Fira Code', monospace; font-weight: 600; font-size: .82rem;
+      color: var(--accent2); margin-top: .35rem; min-height: 1.3em; white-space: nowrap;
+    }
+    .core-cat { font-size: .58rem; color: var(--muted); text-transform: uppercase; letter-spacing: .14em; }
+    .orbit-legend {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem 1.3rem;
+      margin-top: 1.2rem; font-size: .75rem; color: var(--muted);
+    }
+    .orbit-legend span { display: inline-flex; align-items: center; gap: .4rem; }
+    .orbit-legend i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+    @media (max-width: 600px) {
+      .orbit-wrap { height: 240vh; }
+      .orbit-stage { --S: min(86vw, calc(100vh - 210px)); }
+      .orbit-chip { font-size: .56rem; padding: .2rem .45rem; gap: .26rem; }
+      .orbit-chip i { width: 5px; height: 5px; }
+      .core-skill { font-size: .66rem; }
+      .core-cat { font-size: .5rem; }
+    }
+
+    .split-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+    @media (max-width: 700px) { .split-2 { grid-template-columns: 1fr; gap: 1rem; } }
+
+    /* ─── CLICKABLE CARDS + MODAL ─── */
+    .project-card.clickable:focus-visible { outline: 2px solid var(--accent2); outline-offset: 4px; }
+    .project-links { align-items: center; }
+    .card-open {
+      margin-left: auto; font-size: .75rem; font-weight: 600; color: var(--muted);
+      opacity: 0; transform: translateX(-6px); transition: opacity .25s, transform .25s, color .25s;
+    }
+    .project-card:hover .card-open, .project-card:focus-visible .card-open { opacity: 1; transform: none; color: var(--accent2); }
+    @media (hover: none) { .card-open { opacity: 1; transform: none; } }
+
+    .pmodal { position: fixed; inset: 0; z-index: 1001; display: none; align-items: center; justify-content: center; padding: 16px; }
+    .pmodal.open { display: flex; }
+    .pmodal-backdrop { position: absolute; inset: 0; background: var(--modal-backdrop); backdrop-filter: blur(6px); animation: fadeIn .25s ease; }
+    .pmodal-card {
+      position: relative; width: 100%; max-width: 540px; max-height: 85vh; overflow: auto;
+      background: var(--bg2); border: 1px solid var(--glass-border); border-radius: 20px;
+      padding: 2rem; box-shadow: 0 30px 80px rgba(0,0,0,.45), var(--glow);
+      animation: popIn .3s cubic-bezier(.2,.9,.3,1.2);
+    }
+    .pmodal-close {
+      position: absolute; top: 1rem; right: 1rem; width: 36px; height: 36px; border-radius: 10px;
+      border: 1px solid var(--glass-border); background: var(--glass); color: var(--text);
+      font-size: 1.2rem; line-height: 1;
+    }
+    .pmodal-close:hover { border-color: var(--accent); color: var(--accent); }
+    .pmodal-tag { font-family: 'Fira Code', monospace; font-size: .72rem; color: var(--accent2); letter-spacing: .12em; text-transform: uppercase; margin-bottom: .4rem; }
+    .pmodal-card h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: .6rem; padding-right: 2.5rem; }
+    .pmodal-desc { color: var(--muted); font-size: .92rem; line-height: 1.75; margin-bottom: 1.2rem; }
+    .pmodal-list { list-style: none; display: grid; gap: .55rem; margin-bottom: 1.4rem; }
+    .pmodal-list li { display: flex; gap: .6rem; font-size: .88rem; }
+    .pmodal-list li::before { content: '✦'; color: var(--accent); flex-shrink: 0; }
+    .pmodal-status {
+      display: inline-flex; align-items: center; gap: .5rem; margin-top: .2rem;
+      font-family: 'Fira Code', monospace; font-size: .74rem; color: var(--accent3);
+      padding: .35rem .8rem; border-radius: 999px; border: 1px solid var(--glass-border); background: var(--glass);
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes popIn { from { opacity: 0; transform: translateY(16px) scale(.96); } to { opacity: 1; transform: none; } }
+
+    /* ─── LIGHT MODE TWEAKS ─── */
+    :root[data-theme="light"] .badge { color: #6d28d9; }
+    :root[data-theme="light"] .orb { opacity: .14; }
+    :root[data-theme="light"] .tag { background: rgba(15,23,42,.03); }
+    :root[data-theme="light"] .code-block { background: #111527; color: #e2e8f0; border-color: transparent; }
+    :root[data-theme="light"] .project-card:hover { box-shadow: 0 20px 50px rgba(15,23,42,.12), var(--glow); }
+    :root[data-theme="light"] .loader-bar-track { background: var(--track); }
+    :root[data-theme="light"] body::after { opacity: .2; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .orbit-wrap { height: auto; }
+      .orbit-sticky { position: relative; height: auto; padding: 1rem 0 2rem; }
+      .px-penguin, .px-penguin * { animation: none !important; }
+    }
+
     /* ─── NOISE TEXTURE ─── */
     body::after {
       content: ''; position: fixed; inset: 0;
@@ -625,6 +817,7 @@
   <!-- NAV -->
   <nav>
     <div class="nav-logo">&lt;Kev /&gt;</div>
+    <div class="nav-right">
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#skills">Skills</a></li>
@@ -633,11 +826,20 @@
       <li><a href="#contact">Contact</a></li>
       <li><a href="https://drive.google.com/drive/folders/1k5-iG8hOjqE1tNMurHY3Q4FSDtHfzzZ-?usp=sharing" target="_blank" class="nav-resume">Resume ↓</a></li>
     </ul>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light mode" title="Toggle light / dark mode">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    </div>
   </nav>
 
   <!-- HERO -->
   <section id="hero">
     <div class="hero-inner">
+      <div class="hero-avatar" role="img" aria-label="Pixel-art penguin avatar">
+        <svg class="px-penguin" data-penguin viewBox="0 0 16 16" aria-hidden="true"></svg>
+        <span class="status-dot" title="Open to opportunities"></span>
+      </div>
       <div class="badge"><span></span> Open to opportunities</div>
       <h1 class="hero-name">
         Mark Kevin<br>
@@ -697,6 +899,7 @@
     <span class="code-string">"Claude AI"</span>
   <span class="code-bracket">]</span>,
   <span class="code-property">aiTools</span>: <span class="code-bracket">[</span><span class="code-string">"Claude"</span>, <span class="code-string">"Gemini"</span><span class="code-bracket">]</span>,
+  <span class="code-property">vibeCoding</span>: <span class="code-string">"always on ⚡"</span>,
   <span class="code-property">level</span>: <span class="code-string">"Beginner → Growing Fast 🚀"</span>,
   <span class="code-property">openToWork</span>: <span class="code-keyword">true</span>,
   <span class="code-comment">// Coffee consumed: Infinity ☕</span>
@@ -713,6 +916,26 @@
         <div class="section-tag">// expertise</div>
         <h2 class="section-title">Tech Stack</h2>
       </div>
+
+      <div class="orbit-wrap" id="orbit-wrap">
+        <div class="orbit-sticky">
+          <div class="orbit-hint">scroll to spin <span class="bar"><i id="orbit-progress"></i></span></div>
+          <div class="orbit-stage" id="orbit-stage">
+            <div class="orbit-core">
+              <svg class="px-penguin" data-penguin viewBox="0 0 16 16" aria-hidden="true"></svg>
+              <div class="core-skill" id="core-skill">HTML5</div>
+              <div class="core-cat" id="core-cat">Web</div>
+            </div>
+          </div>
+          <div class="orbit-legend">
+            <span style="--c:#06b6d4"><i></i>Web</span>
+            <span style="--c:#f59e0b"><i></i>Tools</span>
+            <span style="--c:#ec4899"><i></i>Vibe Coding</span>
+            <span style="--c:#a78bfa"><i></i>AI</span>
+          </div>
+        </div>
+      </div>
+
       <div class="skills-grid">
         <div class="skill-category reveal">
           <div class="skill-cat-title">HTML5</div>
@@ -773,7 +996,7 @@
         </div>
         <div class="skill-category reveal" style="grid-column: 1 / -1; border-color: rgba(124,58,237,.25); box-shadow: 0 0 30px rgba(124,58,237,.08);">
           <div class="skill-cat-title" style="background: linear-gradient(90deg, #c084fc, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">🤖 AI-Assisted Development</div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+          <div class="split-2">
             <div>
               <div class="skill-bar-wrap">
                 <div class="skill-bar-label">Google Gemini AI <span>80%</span></div>
@@ -800,6 +1023,39 @@
                 <span class="tag">AI Debugging</span>
                 <span class="tag">ChatGPT</span>
                 <span class="tag">Copilot</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="skill-category reveal" style="grid-column: 1 / -1; border-color: rgba(236,72,153,.25); box-shadow: 0 0 30px rgba(236,72,153,.08);">
+          <div class="skill-cat-title" style="background: linear-gradient(90deg, #ec4899, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">⚡ Vibe Coding</div>
+          <div class="split-2">
+            <div>
+              <div class="skill-bar-wrap">
+                <div class="skill-bar-label">Idea → Working Prototype <span>85%</span></div>
+                <div class="skill-bar"><div class="skill-bar-fill" data-width="85" style="background: linear-gradient(90deg, #ec4899, #f59e0b);"></div></div>
+              </div>
+              <div class="skill-bar-wrap">
+                <div class="skill-bar-label">Steering AI Agents (Claude Code) <span>80%</span></div>
+                <div class="skill-bar"><div class="skill-bar-fill" data-width="80" style="background: linear-gradient(90deg, #ec4899, #a78bfa);"></div></div>
+              </div>
+              <div class="skill-bar-wrap">
+                <div class="skill-bar-label">Iterating &amp; Debugging with AI <span>78%</span></div>
+                <div class="skill-bar"><div class="skill-bar-fill" data-width="78" style="background: linear-gradient(90deg, #ec4899, #06b6d4);"></div></div>
+              </div>
+            </div>
+            <div>
+              <p style="font-size:.85rem; color: var(--muted); line-height: 1.8; margin-bottom: .8rem;">
+                I build by describing what I want and steering AI agents through fast <strong style="color:#ec4899">build → test → refine</strong> loops — turning ideas into working prototypes in hours, not weeks. The dashboards and app prototypes in my projects were built this way.
+              </p>
+              <div class="tag-cloud">
+                <span class="tag" style="border-color:rgba(236,72,153,.35);color:#ec4899">Vibe Coding</span>
+                <span class="tag">Claude Code</span>
+                <span class="tag">AI Pair Programming</span>
+                <span class="tag">Rapid Prototyping</span>
+                <span class="tag">Iterative Prompting</span>
+                <span class="tag">Context Engineering</span>
+                <span class="tag">AI-Assisted Testing</span>
               </div>
             </div>
           </div>
@@ -1192,6 +1448,20 @@
     </p>
   </footer>
 
+  <!-- PROJECT DETAILS MODAL -->
+  <div class="pmodal" id="pmodal" aria-hidden="true">
+    <div class="pmodal-backdrop" data-close></div>
+    <div class="pmodal-card" role="dialog" aria-modal="true" aria-labelledby="pmodal-title">
+      <button class="pmodal-close" type="button" data-close aria-label="Close">×</button>
+      <div class="pmodal-tag">// project details</div>
+      <h3 id="pmodal-title"></h3>
+      <p class="pmodal-desc" id="pmodal-desc"></p>
+      <ul class="pmodal-list" id="pmodal-list"></ul>
+      <div class="project-techs" id="pmodal-techs"></div>
+      <div class="pmodal-status" id="pmodal-status"></div>
+    </div>
+  </div>
+
   <script>
   // ─── LOADER ────────────────────────────────────────────────────
   (function() {
@@ -1309,6 +1579,7 @@
   (function() {
     const texts = [
       'Full Stack Web Developer',
+      'Vibe Coder ⚡',
       'UI/UX Enthusiast',
       'Open Source Contributor',
       'Problem Solver',
@@ -1369,12 +1640,7 @@
 
   // ─── NAV SCROLL EFFECT ─────────────────────────────────────────
   window.addEventListener('scroll', () => {
-    const nav = document.querySelector('nav');
-    if (window.scrollY > 50) {
-      nav.style.background = 'rgba(5,8,16,0.95)';
-    } else {
-      nav.style.background = 'rgba(5,8,16,0.7)';
-    }
+    document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 50);
   });
 
   // ─── SMOOTH ACTIVE NAV ─────────────────────────────────────────
@@ -1389,6 +1655,223 @@
       a.style.color = a.getAttribute('href') === '#' + current ? 'var(--text)' : '';
     });
   });
+
+  // ─── THEME TOGGLE ──────────────────────────────────────────────
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('theme-toggle');
+    function sync() {
+      const light = root.getAttribute('data-theme') === 'light';
+      btn.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+    }
+    btn.addEventListener('click', () => {
+      const light = root.getAttribute('data-theme') !== 'light';
+      if (light) root.setAttribute('data-theme', 'light'); else root.removeAttribute('data-theme');
+      try { localStorage.setItem('theme', light ? 'light' : 'dark'); } catch (e) {}
+      sync();
+    });
+    sync();
+  })();
+
+  // ─── PIXEL PENGUIN ─────────────────────────────────────────────
+  (function() {
+    const MAP = [
+      '......KKKK......',
+      '....KKKLKKKK....',
+      '...KKKLKKKKKK...',
+      '..KKKWWKKWWKKK..',
+      '..KKWWWWWWWWKK..',
+      '..KKWEWWWWEWKK..',
+      '..KKWWWOOWWWKK..',
+      '..KKBWOOOOWBKK..',
+      '..KKKWWWWWWKKK..',
+      '..PPPPPPPPPPPP..',
+      'kkKKPWWWWWWWKKKK',
+      'kkKKPWWWWWWWKKKK',
+      '.kKKWWWWWWWWKKK.',
+      '..KKWWWWWWWWKK..',
+      '...KKWWWWWWKK...',
+      '...OOO....OOO...'
+    ];
+    const COL = { K:'#1e1a33', k:'#1e1a33', L:'#4a4380', W:'#f1f5ff', E:'#0b0a14', O:'#f59e0b', B:'#f9a8d4', P:'#ec4899' };
+    const NS = 'http://www.w3.org/2000/svg';
+    document.querySelectorAll('svg[data-penguin]').forEach(svg => {
+      const wing = document.createElementNS(NS, 'g');
+      wing.setAttribute('class', 'px-wing-l');
+      MAP.forEach((row, y) => [...row].forEach((ch, x) => {
+        if (ch === '.') return;
+        const r = document.createElementNS(NS, 'rect');
+        r.setAttribute('x', x); r.setAttribute('y', y);
+        r.setAttribute('width', 1.04); r.setAttribute('height', 1.04);
+        r.setAttribute('fill', COL[ch]);
+        if (ch === 'E') r.setAttribute('class', 'px-eye');
+        (ch === 'k' ? wing : svg).appendChild(r);
+      }));
+      svg.appendChild(wing);
+    });
+  })();
+
+  // ─── SKILLS ORBIT (scroll-driven) ──────────────────────────────
+  (function() {
+    const wrap  = document.getElementById('orbit-wrap');
+    const stage = document.getElementById('orbit-stage');
+    if (!wrap || !stage) return;
+    const CAT = {
+      web:   { c:'#06b6d4', label:'Web' },
+      tools: { c:'#f59e0b', label:'Tools' },
+      vibe:  { c:'#ec4899', label:'Vibe Coding' },
+      ai:    { c:'#a78bfa', label:'AI' }
+    };
+    const RINGS = [
+      { r:.43, speed: 1, items:[['HTML5','web'],['CSS3','web'],['JavaScript','web'],['Git','tools'],['Flexbox','web'],['GitHub','tools'],['CSS Grid','web'],['VS Code','tools'],['PHP','web'],['Responsive','web'],['Animations','web']] },
+      { r:.31, speed:-1, items:[['Vibe Coding','vibe'],['Claude Code','vibe'],['Prototyping','vibe'],['AI Pair Prog','vibe'],['Prompting','vibe'],['Context Eng','vibe'],['AI Testing','vibe']] },
+      { r:.195, speed:1.5, items:[['Claude AI','ai'],['Gemini','ai'],['ChatGPT','ai'],['Copilot','ai'],['Prompt Eng','ai']] }
+    ];
+    RINGS.forEach(ring => {
+      const circle = document.createElement('div');
+      circle.className = 'orbit-ring';
+      circle.style.width = circle.style.height = `calc(var(--S) * ${ring.r * 2})`;
+      stage.insertBefore(circle, stage.firstChild);
+      ring.chips = ring.items.map(([name, cat]) => {
+        const el = document.createElement('div');
+        el.className = 'orbit-chip';
+        el.style.setProperty('--c', CAT[cat].c);
+        el.innerHTML = '<i></i>';
+        el.appendChild(document.createTextNode(name));
+        stage.appendChild(el);
+        return el;
+      });
+    });
+
+    const coreSkill = document.getElementById('core-skill');
+    const coreCat   = document.getElementById('core-cat');
+    const bar       = document.getElementById('orbit-progress');
+    const reduce    = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const TAU = Math.PI * 2;
+    let target = 0, cur = 0, dirty = true, lastCore = -1;
+
+    function readScroll() {
+      if (reduce) return;
+      const rect = wrap.getBoundingClientRect();
+      const total = wrap.offsetHeight - window.innerHeight;
+      target = total > 0 ? Math.min(Math.max(-rect.top / total, 0), 1) : 0;
+    }
+
+    function layout() {
+      const S = stage.clientWidth;
+      const small = S < 480;
+      const depthScale = small ? .3 : .12, depthFade = small ? .55 : .3;
+      RINGS.forEach((ring, ri) => {
+        const n = ring.chips.length, step = TAU / n;
+        const offset = ring.speed * cur * TAU;
+        const active = ((Math.round(-offset / step) % n) + n) % n;
+        ring.chips.forEach((el, i) => {
+          const a = -Math.PI / 2 + i * step + offset;
+          const x = Math.cos(a) * ring.r * S, y = Math.sin(a) * ring.r * S;
+          const on = i === active;
+          const front = (1 - Math.sin(a)) / 2;               // 1 at top, 0 at bottom
+          const s = on ? 1.14 : 1 - depthScale * (1 - front);
+          el.classList.toggle('active', on);
+          el.style.transform = `translate(-50%, -50%) translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${s.toFixed(3)})`;
+          el.style.opacity = on ? 1 : (1 - depthFade * (1 - front)).toFixed(2);
+          el.style.zIndex = on ? 50 : Math.round(front * 40);
+        });
+        if (ri === 0 && active !== lastCore) {
+          lastCore = active;
+          const [name, cat] = ring.items[active];
+          coreSkill.textContent = name;
+          coreCat.textContent = CAT[cat].label;
+        }
+      });
+      bar.style.width = (cur * 100).toFixed(1) + '%';
+    }
+
+    function tick() {
+      const diff = target - cur;
+      if (Math.abs(diff) > 0.0002) { cur += diff * 0.12; dirty = true; }
+      else if (cur !== target) { cur = target; dirty = true; }
+      if (dirty) { layout(); dirty = false; }
+      requestAnimationFrame(tick);
+    }
+    window.addEventListener('scroll', readScroll, { passive: true });
+    window.addEventListener('resize', () => { readScroll(); dirty = true; });
+    readScroll(); cur = target;
+    tick();
+  })();
+
+  // ─── CLICKABLE PROJECT CARDS + DETAILS MODAL ───────────────────
+  (function() {
+    const DETAILS = {
+      'Company Approval Tracker': [
+        'Sign-in and sign-up screens',
+        'Request tables you can filter and sort by status, company or date',
+        'One-click approve / disapprove with clear status badges',
+        'Edit any record in a pop-up modal'
+      ],
+      'SaaS Management Dashboard': [
+        'KPI tiles for MRR and growth',
+        'Churn tracking over time',
+        'Project progress overview',
+        'Trend charts for quick reading'
+      ],
+      'Restaurant Loyalty Rewards App': [
+        'Points balance and digital stamp cards',
+        'Tiered membership levels',
+        'Birthday rewards and flash deals',
+        'Combo bundles and a referral program',
+        'Notification settings'
+      ]
+    };
+    const modal  = document.getElementById('pmodal');
+    const title  = document.getElementById('pmodal-title');
+    const desc   = document.getElementById('pmodal-desc');
+    const list   = document.getElementById('pmodal-list');
+    const techs  = document.getElementById('pmodal-techs');
+    const status = document.getElementById('pmodal-status');
+    let lastFocus = null;
+
+    function openModal(card) {
+      const name = card.querySelector('.project-name').textContent.trim();
+      title.textContent = name;
+      desc.textContent = card.querySelector('.project-desc').textContent.trim();
+      list.innerHTML = '';
+      (DETAILS[name] || []).forEach(t => {
+        const li = document.createElement('li'); li.textContent = t; list.appendChild(li);
+      });
+      list.style.display = DETAILS[name] ? '' : 'none';
+      techs.innerHTML = card.querySelector('.project-techs').innerHTML;
+      status.textContent = DETAILS[name] ? '🧪 Prototype · live demo coming soon' : '🚧 In progress';
+      lastFocus = card;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      modal.querySelector('.pmodal-close').focus();
+    }
+    function closeModal() {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (lastFocus) lastFocus.focus();
+    }
+    modal.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', closeModal));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+
+    document.querySelectorAll('.project-card').forEach(card => {
+      const link = card.querySelector('a.project-link[href]:not([href="#"])');
+      card.classList.add('clickable');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', link ? 'link' : 'button');
+      const hint = document.createElement('span');
+      hint.className = 'card-open';
+      hint.textContent = link ? 'Open site ↗' : 'View details →';
+      card.querySelector('.project-links').appendChild(hint);
+      const go = () => link ? window.open(link.href, '_blank', 'noopener') : openModal(card);
+      card.addEventListener('click', e => { if (!e.target.closest('a')) go(); });
+      card.addEventListener('keydown', e => {
+        if ((e.key === 'Enter' || e.key === ' ') && e.target === card) { e.preventDefault(); go(); }
+      });
+    });
+  })();
   </script>
 </body>
 </html>
